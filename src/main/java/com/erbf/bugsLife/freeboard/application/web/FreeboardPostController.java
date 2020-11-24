@@ -39,13 +39,6 @@ public class FreeboardPostController {
         return new FreeboardPostDto(post);
     }
 
-    @PutMapping("/edit/{postId}")
-    public String modifyPost(@PathVariable Long postId, @RequestBody FreeboardModifyDto editPost){
-        Optional<FreeboardPost> originalPost = repo.findById(postId);
-        FreeboardPost newPost = editPost.toEntity(originalPost.get());
-        repo.save(newPost);
-        return "포스트 수정 완료! ";
-    }
 
 
     @PutMapping("/{postId}")
@@ -86,18 +79,40 @@ public class FreeboardPostController {
 
     //post 삭제
     @DeleteMapping("/{postId}")
-    public String deletePost(@PathVariable Long postId, @RequestParam String pwd){
-        PasswordEncoding passwordEncoding = new PasswordEncoding();
-
-        System.out.println("==========");
-        System.out.println(pwd);
-//        System.out.println(service.getPost(postId).getPwd().toString());
-
-        if (passwordEncoding.matches(pwd, service.getPost(postId).getPwd()))
-            service.deletePost(postId);
-        else
-            return "포스트 삭제 에러";
+    public String deletePost(@PathVariable Long postId){
+         service.deletePost(postId);
         return "Freeboard post 삭제 완료";
 
     }
-}
+
+    @GetMapping("/edit/{postId}")
+    public Boolean pwdCheck(@PathVariable Long postId, @RequestParam String pwd){
+        PasswordEncoding passwordEncoding = new PasswordEncoding();
+
+        Optional<FreeboardPost> originalPost = repo.findById(postId);
+
+        System.out.println(passwordEncoding.matches(pwd, originalPost.get().getPwd()));
+        if(passwordEncoding.matches(pwd, originalPost.get().getPwd())) {
+            System.out.println(passwordEncoding.matches(pwd, originalPost.get().getPwd()));
+           return true;
+        }else {
+            return false;
+        }
+    }
+
+
+
+    @PutMapping("/edit/{postId}")
+    public String modifyPost(@PathVariable Long postId, @RequestBody FreeboardModifyDto editPost){
+        Optional<FreeboardPost> originalPost = repo.findById(postId);
+        FreeboardPost newPost = editPost.toEntity(originalPost.get());
+
+            repo.save(newPost);
+            System.out.println("New Post ==========");
+            return "포스트 수정 완료! ";
+        }
+    }
+
+
+
+

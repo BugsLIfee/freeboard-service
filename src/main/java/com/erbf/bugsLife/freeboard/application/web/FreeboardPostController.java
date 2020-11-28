@@ -85,6 +85,7 @@ public class FreeboardPostController {
 
     }
 
+    //패스워드 체크하는 경로
     @GetMapping("/edit/{postId}")
     public Boolean pwdCheck(@PathVariable Long postId, @RequestParam String pwd){
         PasswordEncoding passwordEncoding = new PasswordEncoding();

@@ -1,5 +1,6 @@
 #freeboard-service/Dockerfile
-FROM openjdk:11-jdk-alpine
-ARG JAR_FILE=target/*.jar
+FROM adoptopenjdk/openjdk11:ubi
+ARG JAR_FILE=/build/libs/*.jar
 COPY ${JAR_FILE} app.jar
+EXPOSE 8083
 ENTRYPOINT ["java","-jar","/app.jar"]
